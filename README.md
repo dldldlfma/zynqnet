@@ -101,6 +101,62 @@ The firmware for the Zynq XC-7Z045 ARM processors is stored under [_FIRMWARE](ht
 ## Netscope CNN Analyzer
 The CNN analysis tool can be found in a separate repository here: [dgschwend/netscope](https://github.com/dgschwend/netscope)
 
+## How to use ZynqNet in Xilinx Vivado HLS?
+
+### 0. step
+
+0. Make HLS project (ref 1. Follow this script for add file)
+1. C simulation
+2. C Synthesis
+3. C/RTL co-simulation
+4. Make the ip pakage
+
+
+### 1. Follow this script for add file
+---------------------------------------------------
+add_files fpga_top.cpp -cflags "-fpermissive"  
+add_files fpga_top.hpp -cflags "-fpermissive"  
+add_files gpool_cache.cpp -cflags "-fpermissive"  
+add_files gpool_cache.hpp -cflags "-fpermissive"  
+add_files image_cache.cpp -cflags "-fpermissive"  
+add_files image_cache.hpp -cflags "-fpermissive"  
+add_files memory_controller.cpp -cflags "-fpermissive"  
+add_files memory_controller.hpp -cflags "-fpermissive"  
+add_files output_cache.cpp -cflags "-fpermissive"  
+add_files output_cache.hpp -cflags "-fpermissive"  
+add_files processing_element.cpp -cflags "-fpermissive"  
+add_files processing_element.hpp -cflags "-fpermissive"  
+add_files weights_cache.cpp -cflags "-fpermissive"  
+add_files weights_cache.hpp -cflags "-fpermissive"  
+
+add_files -tb cpu_top.cpp  
+add_files -tb cpu_top.hpp  
+add_files -tb indata.bin  
+add_files -tb netconfig.cpp  
+add_files -tb netconfig.hpp  
+add_files -tb network.cpp  
+add_files -tb network.hpp  
+add_files -tb unittests.cpp  
+add_files -tb unittests.hpp  
+add_files -tb weights.bin  
+
+---------------------------------------------------
+"without -tb line" is design file  
+"with -tb line" is testbench file  
+
+check above script
+
+
+### 2. if you have Segment fault, make the SHARED_DRAM size to double
+
+when the C simulation, if you face the segment fault, you should size-up the SHARED DREAM in cpu_top.cpp
+this is line 207 in cpu_top.cpp.
+
+SHARED_DRAM = (char *)malloc(total_size);  
+=> SHARED_DRAM = (char *)malloc(total_size *2 );
+
+
+
 ## Copyright and License
 ZynqNet is Copyright 2016 by David Gschwend.
 All files in this repository are released under the GNU General Public License as found in the LICENSE file.
